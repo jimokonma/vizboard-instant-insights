@@ -169,4 +169,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**Built with ❤️ using React, TypeScript, and Vite**
+**Built with ❤️ from Jim**
