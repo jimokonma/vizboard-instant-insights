@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { CSVData, ColumnType, ChartConfig, FilterState, DashboardState } from '@/types'
 import { parseCSV, detectColumnTypes } from '@/utils/csvParser'
 import { applyFilters, prepareChartData } from '@/utils/dataFilter'
@@ -7,6 +7,8 @@ import { DataPreview } from './DataPreview'
 import { ChartSelector } from './ChartSelector'
 import { FilterPanel } from './FilterPanel'
 import { SimpleChart } from './chart/SimpleChart'
+import { DownloadButton } from './DownloadButton'
+import { BulkDownloadButton } from './BulkDownloadButton'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
@@ -15,6 +17,9 @@ import { useToast } from '@/hooks/use-toast'
 
 export function Dashboard() {
   const { toast } = useToast()
+  const chartRef = useRef<HTMLDivElement>(null)
+  const tableRef = useRef<HTMLDivElement>(null)
+  
   const [state, setState] = useState<DashboardState>({
     csvData: null,
     columnTypes: [],
@@ -145,6 +150,14 @@ export function Dashboard() {
             </Badge>
           </div>
           <div className="flex items-center gap-2">
+            {state.csvData && (
+              <BulkDownloadButton
+                chartRef={chartRef}
+                tableRef={tableRef}
+                csvData={filteredData}
+                filename="dashboard_export"
+              />
+            )}
             <Button variant="outline" size="sm" onClick={resetDashboard}>
               <RefreshCw className="h-4 w-4 mr-2" />
               New Data
@@ -173,13 +186,19 @@ export function Dashboard() {
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-6">
           {/* Chart */}
-          <Card className="shadow-data">
+          <Card className="shadow-data" ref={chartRef}>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Visualization</span>
-                <Badge variant="secondary">
-                  {state.chartConfig.type} chart
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">
+                    {state.chartConfig.type} chart
+                  </Badge>
+                  <DownloadButton
+                    elementRef={chartRef}
+                    filename="chart"
+                  />
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -193,6 +212,7 @@ export function Dashboard() {
 
           {/* Data Preview */}
           <DataPreview
+            ref={tableRef}
             data={{ ...state.csvData, rows: filteredData }}
             columnTypes={state.columnTypes}
             maxRows={20}
