@@ -46,7 +46,8 @@ export function prepareChartData(
   xField?: string,
   yField?: string,
   categoryField?: string,
-  valueField?: string
+  valueField?: string,
+  yFields?: string[]
 ): Record<string, any>[] {
   if (!data || data.length === 0) return []
 
@@ -71,12 +72,21 @@ export function prepareChartData(
     }))
   }
 
-  // For bar/line charts, ensure numeric values
-  if (xField && yField) {
-    return data.map(row => ({
-      ...row,
-      [yField]: parseFloat(String(row[yField])) || 0
-    }))
+  // For bar/line charts, ensure numeric values for all Y fields
+  if (xField && (yFields?.length || yField)) {
+    const fieldsToProcess = yFields && yFields.length > 0 ? yFields : [yField].filter(Boolean)
+    
+    return data.map(row => {
+      const processedRow = { ...row }
+      
+      fieldsToProcess.forEach(field => {
+        if (field) {
+          processedRow[field] = parseFloat(String(row[field])) || 0
+        }
+      })
+      
+      return processedRow
+    })
   }
 
   return data

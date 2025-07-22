@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer, Legend } from 'recharts'
 import { ChartConfig } from '@/types'
 
 interface SimpleChartProps {
@@ -53,11 +53,16 @@ export function SimpleChart({ data, config, className }: SimpleChartProps) {
                   boxShadow: 'var(--shadow-card)'
                 }}
               />
-              <Bar 
-                dataKey={config.yField} 
-                fill="hsl(var(--primary))"
-                radius={[4, 4, 0, 0]}
-              />
+              <Legend />
+              {(config.yFields && config.yFields.length > 0 ? config.yFields : [config.yField]).filter(Boolean).map((field, index) => (
+                <Bar 
+                  key={field}
+                  dataKey={field} 
+                  fill={COLORS[index % COLORS.length]}
+                  radius={[4, 4, 0, 0]}
+                  name={field}
+                />
+              ))}
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -86,13 +91,18 @@ export function SimpleChart({ data, config, className }: SimpleChartProps) {
                   boxShadow: 'var(--shadow-card)'
                 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey={config.yField} 
-                stroke="hsl(var(--primary))" 
-                strokeWidth={2}
-                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2 }}
-              />
+              <Legend />
+              {(config.yFields && config.yFields.length > 0 ? config.yFields : [config.yField]).filter(Boolean).map((field, index) => (
+                <Line 
+                  key={field}
+                  type="monotone" 
+                  dataKey={field} 
+                  stroke={COLORS[index % COLORS.length]} 
+                  strokeWidth={2}
+                  dot={{ fill: COLORS[index % COLORS.length], strokeWidth: 2 }}
+                  name={field}
+                />
+              ))}
             </LineChart>
           </ResponsiveContainer>
         </div>

@@ -2,7 +2,9 @@ import { ColumnType, ChartConfig } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { BarChart3, LineChart, PieChart, TrendingUp } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import { BarChart3, LineChart, PieChart, TrendingUp, X } from 'lucide-react'
 
 interface ChartSelectorProps {
   columnTypes: ColumnType[]
@@ -31,6 +33,7 @@ export function ChartSelector({ columnTypes, config, onConfigChange }: ChartSele
     } else {
       newConfig.xField = allColumns[0]?.name
       newConfig.yField = numericColumns[0]?.name
+      newConfig.yFields = numericColumns[0] ? [numericColumns[0].name] : []
     }
     
     onConfigChange(newConfig)
@@ -116,19 +119,52 @@ export function ChartSelector({ columnTypes, config, onConfigChange }: ChartSele
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Y-Axis</label>
-              <Select value={config.yField} onValueChange={(value) => updateConfig('yField', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Y-axis field" />
-                </SelectTrigger>
-                <SelectContent>
+              <label className="text-sm font-medium">Y-Axis Fields</label>
+              <div className="space-y-2">
+                {config.yFields && config.yFields.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {config.yFields.map((field) => (
+                      <Badge key={field} variant="secondary" className="flex items-center gap-1">
+                        {field}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => {
+                            const newFields = config.yFields?.filter(f => f !== field) || []
+                            onConfigChange({ ...config, yFields: newFields, yField: newFields[0] })
+                          }}
+                        >
+                          <X className="h-2 w-2" />
+                        </Button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <div className="grid gap-2">
                   {numericColumns.map((col) => (
-                    <SelectItem key={col.name} value={col.name}>
-                      {col.name}
-                    </SelectItem>
+                    <div key={col.name} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={col.name}
+                        checked={config.yFields?.includes(col.name) || false}
+                        onCheckedChange={(checked) => {
+                          const currentFields = config.yFields || []
+                          if (checked) {
+                            const newFields = [...currentFields, col.name]
+                            onConfigChange({ ...config, yFields: newFields, yField: newFields[0] })
+                          } else {
+                            const newFields = currentFields.filter(f => f !== col.name)
+                            onConfigChange({ ...config, yFields: newFields, yField: newFields[0] })
+                          }
+                        }}
+                      />
+                      <label htmlFor={col.name} className="text-sm cursor-pointer">
+                        {col.name}
+                      </label>
+                    </div>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              </div>
             </div>
           </div>
         )}

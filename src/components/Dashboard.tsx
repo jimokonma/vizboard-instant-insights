@@ -37,7 +37,8 @@ export function Dashboard() {
       const defaultConfig: ChartConfig = {
         type: 'bar',
         xField: columnTypes[0]?.name,
-        yField: numericColumns[0]?.name
+        yField: numericColumns[0]?.name,
+        yFields: numericColumns[0] ? [numericColumns[0].name] : []
       }
 
       setState(prev => ({
@@ -81,7 +82,8 @@ export function Dashboard() {
       state.chartConfig.xField,
       state.chartConfig.yField,
       state.chartConfig.categoryField,
-      state.chartConfig.valueField
+      state.chartConfig.valueField,
+      state.chartConfig.yFields
     )
   }, [filteredData, state.chartConfig])
 

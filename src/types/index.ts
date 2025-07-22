@@ -16,6 +16,7 @@ export interface ChartConfig {
   type: 'bar' | 'line' | 'pie' | 'area'
   xField?: string
   yField?: string
+  yFields?: string[] // Multiple Y-axis fields
   categoryField?: string
   valueField?: string
 }
