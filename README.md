@@ -2,6 +2,8 @@
 
 A modern, interactive data visualization dashboard built with React, TypeScript, and Vite. Transform your data into beautiful charts and gain instant insights with an intuitive drag-and-drop interface.
 
+![VizBoard Dashboard Screenshot](/public/dashboard-screenshot.png)
+
 ![VizBoard Dashboard](https://img.shields.io/badge/Status-Active-brightgreen)
 ![React](https://img.shields.io/badge/React-18.0+-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
