@@ -14,6 +14,33 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
 import { Download, RefreshCw, Settings, BarChart3 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { Switch } from './ui/switch'
+import { Moon, Sun } from 'lucide-react'
+
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return (
+        localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      )
+    }
+    return false
+  })
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    if (isDark) {
+      root.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      root.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
+  }, [isDark])
+
+  return [isDark, setIsDark] as const
+}
 
 export function Dashboard() {
   const { toast } = useToast()
@@ -29,6 +56,8 @@ export function Dashboard() {
     isLoading: false,
     error: null
   })
+
+  const [isDark, setIsDark] = useDarkMode()
 
   const handleFileSelect = async (file: File) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }))
@@ -218,6 +247,11 @@ export function Dashboard() {
             maxRows={20}
           />
         </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+        <Sun size={18} />
+        <Switch checked={isDark} onCheckedChange={setIsDark} />
+        <Moon size={18} />
       </div>
     </div>
   )
