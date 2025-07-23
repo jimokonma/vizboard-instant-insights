@@ -169,4 +169,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**Built with ❤️ from Jim**
+**Built with ❤️ from Jim Okonma**
